@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Help - AgriKart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="bg-green-900 text-white px-4 py-3 flex justify-between items-center">
+    <a href="index.html" class="text-2xl font-bold">AgriKart</a>
+    <ul class="flex space-x-6">
+      <li><a href="index.html" class="hover:underline">Home</a></li>
+      <li><a href="help.html" class="underline">Help</a></li>
+    </ul>
+    <!-- Language Selector -->
+    <select id="languageSelector" onchange="changeLanguage()" class="ml-4 p-1 rounded text-black">
+      <option value="en">English</option>
+      <option value="te">తెలుగు</option>
+      <option value="hi">हिंदी</option>
+      <option value="ta">தமிழ்</option>
+      <option value="ml">മലയാളം</option>
+    </select>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+
+    <h1 class="text-3xl font-bold mb-4 text-green-900">Help & Support</h1>
+    <p class="mb-6 text-lg">Welcome to AgriKart Help Center. We're here to assist you with using the platform. If you're a farmer looking for guidance, read the FAQs or contact us below.</p>
+
+    <!-- Search FAQ -->
+    <div>
+      <input id="faqSearch" type="text" placeholder="Search FAQs..." 
+             class="w-full p-2 border border-green-300 rounded" oninput="filterFAQs()" />
+    </div>
+
+    <!-- FAQ Section -->
+    <div id="faqList" class="space-y-4">
+      <div class="faq-item border border-green-200 rounded p-4 bg-white cursor-pointer" onclick="toggleFAQ(this)">
+        <h2 class="text-xl font-semibold text-green-800">🛒 How to place an order?</h2>
+        <p class="mt-2">Browse the products, click “Order Now” on your item, and follow the steps to confirm your address and delivery.</p>
+      </div>
+
+      <div class="faq-item border border-green-200 rounded p-4 bg-white cursor-pointer" onclick="toggleFAQ(this)">
+        <h2 class="text-xl font-semibold text-green-800">📦 How is delivery done?</h2>
+        <p class="mt-2">Our local delivery team will bring products to your doorstep, usually within 2-3 days.</p>
+      </div>
+
+      <div class="faq-item border border-green-200 rounded p-4 bg-white cursor-pointer" onclick="toggleFAQ(this)">
+        <h2 class="text-xl font-semibold text-green-800">📞 Need more help?</h2>
+        <p class="mt-2">Call us: <strong>1800-AGR-HELP (1800-247-4357)</strong><br>
+          WhatsApp: <strong>+91 8019797611</strong><br>
+          Email: <a href="mailto:nikithareddy1103@gmail.com" class="text-blue-600 underline">nikithareddy1103@gmail.com</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Submit a Help Request -->
+    <div class="bg-white p-6 rounded shadow-md border border-green-200">
+      <h2 class="text-2xl font-semibold mb-4 text-green-900">Submit a Help Request</h2>
+      <form id="helpForm" onsubmit="submitHelpRequest(event)" class="space-y-4">
+        <div>
+          <label for="name" class="block font-medium mb-1">Name</label>
+          <input id="name" name="name" required class="w-full p-2 border border-green-300 rounded" />
+        </div>
+        <div>
+          <label for="email" class="block font-medium mb-1">Email</label>
+          <input id="email" type="email" name="email" required class="w-full p-2 border border-green-300 rounded" />
+        </div>
+        <div>
+          <label for="message" class="block font-medium mb-1">Your Question / Issue</label>
+          <textarea id="message" name="message" rows="4" required class="w-full p-2 border border-green-300 rounded"></textarea>
+        </div>
+        <button type="submit" class="bg-green-900 text-white px-4 py-2 rounded hover:bg-green-800">Submit</button>
+      </form>
+      <p id="formResponse" class="mt-3 text-green-700 font-semibold"></p>
+    </div>
+
+  </div>
+
+  <!-- Live Chat Widget (Mock) -->
+  <div id="chatWidget" class="fixed bottom-5 right-5 w-72 bg-white border border-green-300 rounded-lg shadow-lg flex flex-col" style="display:none;">
+    <div class="bg-green-900 text-white p-3 rounded-t-lg flex justify-between items-center">
+      <span>AgriKart Support</span>
+      <button onclick="toggleChat()" aria-label="Close chat" class="font-bold hover:text-green-300">×</button>
+    </div>
+    <div id="chatMessages" class="flex-grow p-3 overflow-y-auto text-sm space-y-2 max-h-48">
+      <div class="bg-green-100 p-2 rounded text-green-900">Hi! How can we help you today?</div>
+    </div>
+    <form id="chatForm" onsubmit="sendChatMessage(event)" class="p-2 flex border-t border-green-200">
+      <input id="chatInput" type="text" placeholder="Type your message..." class="flex-grow p-2 border border-green-300 rounded-l" required />
+      <button type="submit" class="bg-green-900 text-white px-3 rounded-r hover:bg-green-800">Send</button>
+    </form>
+  </div>
+
+  <button id="chatToggleBtn" onclick="toggleChat()" 
+          class="fixed bottom-5 right-5 bg-green-900 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-green-800" 
+          aria-label="Open chat">
+    💬
+  </button>
+
+  <script>
+  const translations = {
+    en: {
+      title: "Help & Support",
+      welcome: "Welcome to AgriKart Help Center. We're here to assist you with using the platform. If you're a farmer looking for guidance, read the FAQs or contact us below.",
+      faq1: "🛒 How to place an order?",
+      faq1_ans: "Browse the products, click “Order Now” on your item, and follow the steps to confirm your address and delivery.",
+      faq2: "📦 How is delivery done?",
+      faq2_ans: "Our local delivery team will bring products to your doorstep, usually within 2-3 days.",
+      faq3: "📞 Need more help?",
+      faq3_ans: `Call us: <strong>1800-AGR-HELP (1800-247-4357)</strong><br>
+                WhatsApp: <strong>+91 8019797611</strong><br>
+                Email: <a href="mailto:nikithareddy1103@gmail.com" class="text-blue-600 underline">nikithareddy1103@gmail.com</a>`,
+      submitRequest: "Submit a Help Request",
+      searchPlaceholder: "Search FAQs..."
+    },
+    hi: {
+      title: "सहायता और समर्थन",
+      welcome: "AgriKart सहायता केंद्र में आपका स्वागत है। हम प्लेटफ़ॉर्म का उपयोग करने में आपकी सहायता के लिए यहां हैं। यदि आप किसान हैं और मार्गदर्शन चाहते हैं, तो नीचे दिए गए सामान्य प्रश्न पढ़ें या हमसे संपर्क करें।",
+      faq1: "🛒 ऑर्डर कैसे करें?",
+      faq1_ans: "उत्पादों को ब्राउज़ करें, अपने आइटम पर 'ऑर्डर अब' पर क्लिक करें, और अपना पता और डिलीवरी की पुष्टि करें।",
+      faq2: "📦 डिलीवरी कैसे की जाती है?",
+      faq2_ans: "हमारी स्थानीय डिलीवरी टीम आपके उत्पाद 2-3 दिनों के भीतर आपके दरवाजे तक पहुंचा देगी।",
+      faq3: "📞 अधिक सहायता चाहिए?",
+      faq3_ans: `कॉल करें: <strong>1800-AGR-HELP (1800-247-4357)</strong><br>
+                व्हाट्सएप: <strong>+91 8019797611</strong><br>
+                ईमेल: <a href="mailto:nikithareddy1103@gmail.com" class="text-blue-600 underline">nikithareddy1103@gmail.com</a>`,
+      submitRequest: "सहायता अनुरोध सबमिट करें",
+      searchPlaceholder: "सामान्य प्रश्न खोजें..."
+    },
+    te: {
+    title: "సహాయం & మద్దతు",
+    welcome: "AgriKart సహాయ కేంద్రానికి స్వాగతం. మేము ప్లాట్‌ఫారమ్ ఉపయోగంలో మీకు సహాయం చేయడానికి ఇక్కడ ఉన్నాము. మీరు రైతు అయితే, FAQ చదవండి లేదా దిగువలో మమ్మల్ని సంప్రదించండి.",
+    faq1: "🛒 ఆర్డర్ ఎలా పెట్టాలి?",
+    faq1_ans: "ఉత్పత్తులను బ్రౌజ్ చేయండి, మీ ఐటెమ్‌పై “ఇప్పుడు ఆర్డర్” క్లిక్ చేయండి, మరియు మీ చిరునామా మరియు డెలివరీని ధృవీకరించడానికి అడిగిన దశలను అనుసరించండి.",
+    faq2: "📦 డెలివరీ ఎలా జరుగుతుంది?",
+    faq2_ans: "మా స్థానిక డెలివరీ బృందం సాధారణంగా 2-3 రోజుల్లో మీ ఇంటి వద్ద ఉత్పత్తులను తీసుకు వస్తుంది.",
+    faq3: "📞 మరింత సహాయం కావాలా?",
+    faq3_ans: `కాల్ చేయండి: <strong>1800-AGR-HELP (1800-247-4357)</strong><br>
+               వాట్సాప్: <strong>+91 8019797611</strong><br>
+               ఇమెయిల్: <a href="mailto:nikithareddy1103@gmail.com" class="text-blue-600 underline">nikithareddy1103@gmail.com</a>`,
+    submitRequest: "సహాయం అభ్యర్థన సబ్మిట్ చేయండి",
+    searchPlaceholder: "FAQలను శోధించండి..."
+  },
+  ta: {
+    title: "உதவி & ஆதரவு",
+    welcome: "AgriKart உதவி மையத்திற்கு வரவேற்கிறோம். இந்த தளத்தைப் பயன்படுத்த உங்களுக்கு உதவ இங்கே இருக்கிறோம். நீங்கள் விவசாயி என்றால், அடிக்கடி கேட்கப்படும் கேள்விகளை படியுங்கள் அல்லது கீழே எங்களை தொடர்பு கொள்ளுங்கள்.",
+    faq1: "🛒 எப்படி ஆர்டர் செய்வது?",
+    faq1_ans: "தயாரிப்புகளை உலாவி, உங்கள் பொருளில் “இப்போதே ஆர்டர்” என்பதைக் கிளிக் செய்து, உங்கள் முகவரி மற்றும் விநியோகத்தை உறுதிப்படுத்த படிகளை பின்பற்றவும்.",
+    faq2: "📦 விநியோகம் எப்படி செய்யப்படுகிறது?",
+    faq2_ans: "எங்கள் உள்ளூர் விநியோக குழு பொதுவாக 2-3 நாட்களில் உங்கள் கதவுக்கு பொருட்களை கொண்டு வருவார்கள்.",
+    faq3: "📞 கூடுதல் உதவி வேண்டுமா?",
+    faq3_ans: `அழைக்கவும்: <strong>1800-AGR-HELP (1800-247-4357)</strong><br>
+               வாட்ஸ்அப்: <strong>+91 8019797611</strong><br>
+               மின்னஞ்சல்: <a href="mailto:nikithareddy1103@gmail.com" class="text-blue-600 underline">nikithareddy1103@gmail.com</a>`,
+    submitRequest: "உதவி கோரிக்கையை சமர்ப்பிக்கவும்",
+    searchPlaceholder: "அடிக்கடி கேட்கப்படும் கேள்விகளைத் தேடு..."
+  },
+  ml: {
+    title: "സഹായം & പിന്തുണ",
+    welcome: "AgriKart സഹായ കേന്ദ്രത്തിലേക്ക് സ്വാഗതം. പ്ലാറ്റ്ഫോം ഉപയോഗിക്കുന്നതിന് ഞങ്ങൾ ഇവിടെ സഹായത്തിനായി ഉണ്ടാകുന്നു. നിങ്ങൾ ഒരു കർഷകൻ ആണെങ്കിൽ, ചോദ്യങ്ങൾ വായിക്കുകയോ താഴെ ഞങ്ങളെ ബന്ധപ്പെടുകയോ ചെയ്യുക.",
+    faq1: "🛒 ഓർഡർ എങ്ങനെ ചെയ്യാം?",
+    faq1_ans: "ഉത്പന്നങ്ങൾ ബ്രൗസ് ചെയ്ത്, നിങ്ങളുടെ ഐറ്റത്തിൽ “ഇപ്പോൾ ഓർഡർ” ക്ലിക് ചെയ്യുക, ശേഷം വിലാസം ഡെലിവറി സ്ഥിരീകരിക്കാൻ നിർദേശിച്ച ചുവടുകൾ പാലിക്കുക.",
+    faq2: "📦 ഡെലിവറി എങ്ങനെ നടത്തുന്നു?",
+    faq2_ans: "ഞങ്ങളുടെ പ്രാദേശിക ഡെലിവറി സംഘം സാധാരണയായി 2-3 ദിവസത്തിനുള്ളിൽ നിങ്ങളുടെ വാതിൽവാഴയിൽ ഉത്പന്നങ്ങൾ എത്തിക്കും.",
+    faq3: "📞 കൂടുതൽ സഹായം വേണോ?",
+    faq3_ans: `കോൾ ചെയ്യുക: <strong>1800-AGR-HELP (1800-247-4357)</strong><br>
+               വാട്‌സ്ആപ്പ്: <strong>+91 8019797611</strong><br>
+               ഇമെയിൽ: <a href="mailto:nikithareddy1103@gmail.com" class="text-blue-600 underline">nikithareddy1103@gmail.com</a>`,
+    submitRequest: "സഹായ അഭ്യർത്ഥന സമർപ്പിക്കുക",
+    searchPlaceholder: "അടിക്കടി ചോദിക്കപ്പെടുന്ന ചോദ്യങ്ങൾ തിരയുക..."
+  }
+  };
+
+  function changeLanguage() {
+    const lang = document.getElementById('languageSelector').value;
+    const t = translations[lang];
+
+    if (!t) return;
+
+    document.getElementById('helpTitle').textContent = t.title;
+    document.getElementById('welcomeText').textContent = t.welcome;
+
+    document.getElementById('faq1_q').textContent = t.faq1;
+    document.getElementById('faq1_a').textContent = t.faq1_ans;
+
+    document.getElementById('faq2_q').textContent = t.faq2;
+    document.getElementById('faq2_a').textContent = t.faq2_ans;
+
+    document.getElementById('faq3_q').textContent = t.faq3;
+    document.getElementById('faq3_a').innerHTML = t.faq3_ans;
+
+    document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+    document.getElementById('submitRequestTitle').textContent = t.submitRequest;
+  }
+
+  function toggleFAQ(el) {
+    const para = el.querySelector('p');
+    para.classList.toggle('hidden');
+  }
+
+  function filterFAQs() {
+    const input = document.getElementById('faqSearch').value.toLowerCase();
+    const items = document.querySelectorAll('#faqList .faq-item');
+    items.forEach(item => {
+      const question = item.querySelector('h2').textContent.toLowerCase();
+      item.style.display = question.includes(input) ? '' : 'none';
+    });
+  }
+
+  function submitHelpRequest(event) {
+    event.preventDefault();
+    alert('Help request submitted!');
+    document.getElementById('helpForm').reset();
+  }
+</script>
+
+
+</body>
+</html>
+
+
